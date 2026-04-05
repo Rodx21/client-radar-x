@@ -1,0 +1,13 @@
+﻿ClientRadarX Mobile Checkpoint
+Created: 01/13/2026 04:23:42
+Checkpoint folder: _checkpoints\mobile-brand-working-20260113-0423
+
+Includes:
+- mobile/app (Expo Router screens)
+- mobile/assets (includes assets/brands/auto-music-sound)
+- mobile/packages (monorepo packages)
+- app.json + package.json (+ lockfile if present)
+
+Notes:
+- Confirmed working on Android emulator
+- Brand icon/splash from assets/brands/auto-music-sound
