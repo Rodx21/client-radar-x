@@ -1,0 +1,5 @@
+-- Seed data for local `supabase db reset`.
+-- Tenant + service catalogue seed rows already ship inside
+-- migrations/20260610000000_init.sql, so there is nothing to add here yet.
+-- Add INSERTs for additional local-only test data (e.g. sample appointments,
+-- gallery items) as those features are wired up.
