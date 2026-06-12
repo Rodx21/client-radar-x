@@ -9,6 +9,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTheme } from "@/app/theme/theme";
 import { useT } from "@/app/i18n";
 import { CLIENT } from "@/config/client";
+import { supabase, TENANT_ID } from "@/app/lib/supabase";
 import { Screen, Container, Card, SoftCard, PrimaryButton, GhostButton, Divider } from "@/app/theme/ui";
 
 type IoniconName = ComponentProps<typeof Ionicons>["name"];
@@ -110,9 +111,22 @@ export default function QuoteScreen() {
   async function submit() {
     if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     const svc = SERVICES.find((s) => s.id === service)?.labelKey ?? service;
+    const serviceLabel = t(svc);
+
+    const { error } = await supabase.from("quotes").insert({
+      tenant_id: TENANT_ID,
+      service: serviceLabel,
+      car_model: model.trim(),
+      car_year: year.trim(),
+      contact_name: name.trim(),
+      contact_phone: phone.trim(),
+      status: "pending",
+    });
+    if (error) console.warn("quote insert failed:", error.message);
+
     const photosLine = photos.length ? t("quote.waPhotosLine").replace("{count}", String(photos.length)) : "";
     const msg = t("quote.waTemplate")
-      .replace("{service}", t(svc))
+      .replace("{service}", serviceLabel)
       .replace("{car}", `${model} (${year})`)
       .replace("{name}", name)
       .replace("{phone}", phone) + photosLine;

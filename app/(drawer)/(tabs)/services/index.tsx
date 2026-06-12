@@ -1,26 +1,32 @@
-import React, { useState } from "react";
-import { View, Text, Pressable, ScrollView } from "react-native";
+import { useEffect, useState } from "react";
+import { View, Text, Pressable, ScrollView, ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";
 import { useTheme } from "@/app/theme/theme";
 import { useT } from "@/app/i18n";
 import { CLIENT } from "@/config/client";
+import { supabase, TENANT_ID } from "@/app/lib/supabase";
 import { Screen, Container, Card, SoftCard, PrimaryButton, Pill, Divider, FadeSlideIn } from "@/app/theme/ui";
 
-const ALL_SERVICES = [
-  { id: "tint",     titleKey: "servicesData.tintTitle",     descKey: "servicesData.tintBlurb",     priceKey: "servicesData.tintPrice"     },
-  { id: "audio",    titleKey: "servicesData.audioTitle",    descKey: "servicesData.audioBlurb",    priceKey: "servicesData.audioPrice"    },
-  { id: "wrap",     titleKey: "servicesData.wrapTitle",     descKey: "servicesData.wrapBlurb",     priceKey: "servicesData.wrapPrice"     },
-  { id: "chrome",   titleKey: "servicesData.chromeTitle",   descKey: "servicesData.chromeBlurb",   priceKey: "servicesData.chromePrice"   },
-  { id: "lighting", titleKey: "servicesData.lightingTitle", descKey: "servicesData.lightingBlurb", priceKey: "servicesData.lightingPrice" },
-  { id: "wheels",   titleKey: "servicesData.wheelsTitle",   descKey: "servicesData.wheelsBlurb",   priceKey: "servicesData.wheelsPrice"   },
-];
+type Service = { id: string; name: string; description: string | null; price_from: number | null; category: string };
 
 export default function ServicesScreen() {
   const { tokens } = useTheme();
   const { t } = useT();
   const router = useRouter();
   const [filter, setFilter] = useState("all");
-  const shown = filter === "all" ? ALL_SERVICES : ALL_SERVICES.filter((s) => s.id === filter);
+  const [services, setServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      const { data } = await supabase.from("services").select("*").eq("tenant_id", TENANT_ID).eq("active", true);
+      if (data) setServices(data as Service[]);
+      setLoading(false);
+    })();
+  }, []);
+
+  const shown = filter === "all" ? services : services.filter((s) => s.category === filter);
 
   return (
     <Screen>
@@ -48,25 +54,33 @@ export default function ServicesScreen() {
             <View style={{ marginTop: 12 }}><PrimaryButton label={t("common.getQuote")} onPress={() => router.push("/quote")} /></View>
           </SoftCard>
 
-          <View style={{ marginTop: tokens.space.lg, gap: 10 }}>
-            {shown.map((s, idx) => (
-              <FadeSlideIn key={s.id} delay={idx * 60}>
-                <Pressable onPress={() => router.push("/quote")} style={({ pressed }) => ({ opacity: pressed ? 0.9 : 1 })}>
-                  <Card>
-                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                      <View style={{ flex: 1, paddingRight: 10 }}>
-                        <Text style={{ color: tokens.color.ink, fontWeight: "900", fontSize: 14 }}>{t(s.titleKey)}</Text>
-                        <Text style={{ color: tokens.color.muted, fontSize: 12, marginTop: 6, lineHeight: 16 }}>{t(s.descKey)}</Text>
+          {loading ? (
+            <View style={{ marginTop: tokens.space.lg, alignItems: "center", paddingVertical: tokens.space.lg }}>
+              <ActivityIndicator color={tokens.color.accent} />
+            </View>
+          ) : (
+            <View style={{ marginTop: tokens.space.lg, gap: 10 }}>
+              {shown.map((s, idx) => (
+                <FadeSlideIn key={s.id} delay={idx * 60}>
+                  <Pressable onPress={() => router.push("/quote")} style={({ pressed }) => ({ opacity: pressed ? 0.9 : 1 })}>
+                    <Card>
+                      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                        <View style={{ flex: 1, paddingRight: 10 }}>
+                          <Text style={{ color: tokens.color.ink, fontWeight: "900", fontSize: 14 }}>{s.name}</Text>
+                          <Text style={{ color: tokens.color.muted, fontSize: 12, marginTop: 6, lineHeight: 16 }}>{s.description}</Text>
+                        </View>
+                        {s.price_from != null && (
+                          <View style={{ backgroundColor: tokens.color.accentSoft, borderWidth: 1, borderColor: `${tokens.color.accent}44`, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 12 }}>
+                            <Text style={{ color: tokens.color.ink, fontWeight: "900", fontSize: 11 }}>{t("common.priceFrom")}{s.price_from}</Text>
+                          </View>
+                        )}
                       </View>
-                      <View style={{ backgroundColor: tokens.color.accentSoft, borderWidth: 1, borderColor: `${tokens.color.accent}44`, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 12 }}>
-                        <Text style={{ color: tokens.color.ink, fontWeight: "900", fontSize: 11 }}>{t(s.priceKey)}</Text>
-                      </View>
-                    </View>
-                  </Card>
-                </Pressable>
-              </FadeSlideIn>
-            ))}
-          </View>
+                    </Card>
+                  </Pressable>
+                </FadeSlideIn>
+              ))}
+            </View>
+          )}
         </Container>
       </ScrollView>
     </Screen>
