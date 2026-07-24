@@ -10,6 +10,7 @@ import { useTheme } from "@/app/theme/theme";
 import { useT } from "@/app/i18n";
 import { CLIENT } from "@/config/client";
 import { supabase, TENANT_ID } from "@/app/lib/supabase";
+import { uploadImage } from "@/app/lib/uploadImage";
 import { Screen, Container, Card, SoftCard, PrimaryButton, GhostButton, Divider } from "@/app/theme/ui";
 
 type IoniconName = ComponentProps<typeof Ionicons>["name"];
@@ -118,6 +119,10 @@ export default function QuoteScreen() {
     const svc = SERVICES.find((s) => s.id === service)?.labelKey ?? service;
     const serviceLabel = t(svc);
 
+    const uploadedPhotos = (
+      await Promise.all(photos.map((uri, i) => uploadImage("quote-photos", `${TENANT_ID}/${Date.now()}-${i}`, uri)))
+    ).filter((url): url is string => !!url);
+
     const { error } = await supabase.from("quotes").insert({
       tenant_id: TENANT_ID,
       service: serviceLabel,
@@ -125,6 +130,7 @@ export default function QuoteScreen() {
       car_year: year.trim(),
       contact_name: name.trim(),
       contact_phone: phone.trim(),
+      photos: uploadedPhotos,
       status: "pending",
     });
     if (error) console.warn("quote insert failed:", error.message);
@@ -212,8 +218,8 @@ export default function QuoteScreen() {
               <View>
                 <Text style={{ color: tokens.color.ink, fontWeight: "900", fontSize: 16, marginBottom: 16 }}>{t("quote.photos")}</Text>
                 <Card>
-                  <Text style={{ color: tokens.color.muted, fontSize: 12, lineHeight: 16 }}>Adicione fotos do seu carro para um orçamento mais preciso.</Text>
-                  <View style={{ marginTop: 12 }}><PrimaryButton label="Adicionar fotos" onPress={pickPhotos} /></View>
+                  <Text style={{ color: tokens.color.muted, fontSize: 12, lineHeight: 16 }}>{t("quote.photosHint")}</Text>
+                  <View style={{ marginTop: 12 }}><PrimaryButton label={t("quote.addPhotos")} onPress={pickPhotos} /></View>
                   {photos.length > 0 && (
                     <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10, marginTop: 14 }}>
                       {photos.map((uri) => (

@@ -131,17 +131,19 @@ and its six services.
 |------|--------|
 | Auth (sign up / sign in) | ✅ Live — `supabase.auth.signInWithPassword` / `signUp` |
 | Agenda (appointments) | ✅ Live — queries `appointments` joined to `services`, filtered by `tenant_id` |
-| Services catalogue | ⚠️ Static array in `services/index.tsx` — not yet reading from the `services` table |
-| Gallery | ⚠️ Static local images in `gallery/index.tsx` — not yet reading from `gallery_items` |
-| Quote wizard | ⚠️ Drafts to AsyncStorage, submits via WhatsApp deep link — not yet persisted to `quotes` |
-| Supabase Storage | ❌ Not used — gallery/quote images are local only |
-| i18n | ⚠️ PT-BR only — the EN/PT toggle in Settings persists a preference but the `en-US` dictionary is not implemented yet |
+| Booking (real time-slot picker) | ✅ Live — `app/booking`, backed by `get_booked_times()` + a unique slot index that prevents double-booking |
+| Admin panel | ✅ Live — `app/admin`, role-gated CRUD for appointments, quotes, services, gallery, and tenant settings |
+| Services catalogue | ✅ Live — reads from the `services` table |
+| Gallery | ✅ Live — reads from `gallery_items`; admin can upload photos to Supabase Storage or paste a URL |
+| Quote wizard | ✅ Live — persists to `quotes` (including uploaded photo URLs) and opens a prefilled WhatsApp chat |
+| Supabase Storage | ✅ Used — `gallery` and `quote-photos` buckets, public read / admin (or, for quotes, anyone) write |
+| i18n | ✅ PT-BR and EN-US dictionaries both implemented; toggle in Settings persists the preference |
 | Multi-tenancy | ⚠️ Schema + RLS support multiple tenants; only one tenant (`auto-music-sound`) is deployed/configured |
 
-This reflects an intentional phase-1 build: authentication and the
-appointments flow are fully wired end-to-end against the live database,
-proving the multi-tenant pattern. Services, gallery, quotes, and Storage are
-schema-ready and are the next features to connect.
+This reflects the current build: authentication, appointments/booking, the
+admin panel, and the customer-facing quote/gallery/services flows are all
+wired end-to-end against the live database and Storage. The remaining gap is
+onboarding a second tenant to validate the multi-tenant pattern end-to-end.
 
 ---
 
@@ -222,11 +224,11 @@ eas build --platform android --profile production
 
 ## Roadmap
 
-- [ ] Wire Services and Gallery screens to `services` / `gallery_items` tables
-- [ ] Persist quote submissions to the `quotes` table (in addition to WhatsApp)
-- [ ] Supabase Storage for gallery and quote photos
-- [ ] Implement the `en-US` i18n dictionary (currently PT-BR only)
+- [x] Wire Services and Gallery screens to `services` / `gallery_items` tables
+- [x] Persist quote submissions to the `quotes` table (in addition to WhatsApp)
+- [x] Supabase Storage for gallery and quote photos
+- [x] Implement the `en-US` i18n dictionary
+- [x] Automated tests
 - [ ] Derive white-label strings (`drawer.title`, `business.*`) from `config/client.ts`
-- [ ] Automated tests
 - [ ] Web dashboard for store owners
 - [ ] Client #2 onboarding (validates the multi-tenant architecture end-to-end)

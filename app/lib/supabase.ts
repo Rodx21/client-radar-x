@@ -3,8 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CLIENT } from "@/config/client";
 
-// Expo Router renders this module on the server (no `window`/localStorage),
-// so AsyncStorage's web shim must be skipped there or GoTrueClient crashes on init.
+// Expo Router renders this module on the server (no `window`/localStorage), so the web shim must be skipped there or GoTrueClient crashes on init.
 const ssrSafeStorage = {
   // Reads a stored auth key, returning null when running outside the browser.
   getItem: (key: string) => (typeof window === "undefined" ? Promise.resolve(null) : AsyncStorage.getItem(key)),

@@ -1,6 +1,5 @@
 -- ============================================================
--- ClientRadarX — Initial Schema
--- Project: clientradarx-auto-music
+-- ClientRadarX — Initial Schema (Project: clientradarx-auto-music)
 -- ============================================================
 
 -- ─── TENANTS ─────────────────────────────────────────────────

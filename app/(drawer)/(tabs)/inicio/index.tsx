@@ -1,8 +1,7 @@
 import { useState, type ComponentProps } from "react";
 import { View, Text, Pressable, ScrollView, Linking, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import { useNavigation } from "expo-router";
+import { useRouter, useNavigation } from "expo-router";
 import { useTheme } from "@/app/theme/theme";
 import { useT } from "@/app/i18n";
 import { CLIENT } from "@/config/client";
