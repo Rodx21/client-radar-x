@@ -7,12 +7,11 @@ import { useT, WEEKDAY_ABBR, MONTH_ABBR } from "@/app/i18n";
 import { getSession, Session } from "@/app/lib/session";
 import { supabase, TENANT_ID } from "@/app/lib/supabase";
 import { Screen, Container, Card, SoftCard, PrimaryButton, Divider, FadeSlideIn, StatusBadge } from "@/app/theme/ui";
+import { weekDays, toDate } from "./dateHelpers";
 
 type Appt = { id: string; car_model: string; car_year: string; date: string; time: string; status: "pending" | "confirmed" | "cancelled" | "completed"; services: { name: string }[] | null };
 
-function weekDays(base: Date) { return Array.from({length:7},(_,i)=>{ const d=new Date(base); d.setDate(base.getDate()+i); return d; }); }
-function toDate(d: Date) { return d.toISOString().split("T")[0]; }
-
+// Weekly agenda screen; shows the signed-in user's appointments for the selected day.
 export default function AgendaScreen() {
   const { tokens } = useTheme();
   const { t, lang } = useT();
@@ -35,6 +34,7 @@ export default function AgendaScreen() {
 
   useEffect(() => { getSession().then(setSession); }, []);
 
+  // Loads the current user's appointments for this tenant from Supabase.
   const fetch = useCallback(async () => {
     const s = await getSession();
     if (!s) return;

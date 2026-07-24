@@ -6,11 +6,13 @@ type Ctx = { mode: ThemeMode; setMode: (m: ThemeMode) => void; toggle: () => voi
 const ThemeContext = createContext<Ctx | null>(null);
 const PREF = "crx.theme";
 
+// Provides the current theme mode and tokens to the app, persisting the choice locally.
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mode, setModeState] = useState<ThemeMode>("light");
   useEffect(() => {
     getPref(PREF).then((v) => { if (v === "dark" || v === "light") setModeState(v); });
   }, []);
+  // Updates the active mode in state and saves it as a local preference.
   const setMode = (m: ThemeMode) => { setModeState(m); setPref(PREF, m); };
   const tokens = useMemo(() => createTokens(mode), [mode]);
   return (
@@ -20,6 +22,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
+// Hook for consuming the current theme mode, tokens, and mode setters.
 export function useTheme() {
   const ctx = useContext(ThemeContext);
   if (!ctx) throw new Error("useTheme outside ThemeProvider");

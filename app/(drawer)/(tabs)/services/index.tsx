@@ -9,6 +9,7 @@ import { Screen, Container, Card, SoftCard, PrimaryButton, Pill, Divider, FadeSl
 
 type Service = { id: string; name: string; description: string | null; price_from: number | null; category: string };
 
+// Service catalogue screen; loads active services for this tenant from Supabase and filters by category.
 export default function ServicesScreen() {
   const { tokens } = useTheme();
   const { t } = useT();

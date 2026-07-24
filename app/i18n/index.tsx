@@ -7,7 +7,8 @@ type Ctx = { lang: Language; setLang: (l: Language) => void; t: (key: string) =>
 const I18nContext = createContext<Ctx | null>(null);
 const PREF = "crx.lang";
 
-function resolve(obj: Dict, path: string): string | Dict | undefined {
+// Looks up a dot-separated key path (e.g. "login.title") inside a translation dictionary.
+export function resolve(obj: Dict, path: string): string | Dict | undefined {
   return path.split(".").reduce<string | Dict | undefined>((a, k) => {
     if (typeof a === "object" && a !== null && k in a) return a[k];
     return undefined;
@@ -54,12 +55,15 @@ export const MONTH_ABBR: Record<Language, string[]> = {
   "en-US": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
 };
 
+// Provides the active language and a translate function, persisting the language locally.
 export function I18nProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLangState] = useState<Language>("pt-BR");
   useEffect(() => {
     getPref(PREF).then((v) => { if (v === "pt-BR" || v === "en-US") setLangState(v as Language); });
   }, []);
+  // Updates the active language in state and saves it as a local preference.
   const setLang = (l: Language) => { setLangState(l); setPref(PREF, l); };
+  // Translates a key in the active language, falling back to Portuguese then the raw key.
   const t = useMemo(() => (key: string) => {
     const v = resolve(DICTS[lang], key);
     if (typeof v === "string") return v;
@@ -69,6 +73,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   return <I18nContext.Provider value={{ lang, setLang, t }}>{children}</I18nContext.Provider>;
 }
 
+// Hook for consuming the active language and translate function.
 export function useT() {
   const ctx = useContext(I18nContext);
   if (!ctx) throw new Error("useT outside I18nProvider");

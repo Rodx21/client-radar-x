@@ -10,6 +10,7 @@ import { Screen, Card, PrimaryButton, GhostButton } from "./theme/ui";
 
 type Mode = "signin" | "signup";
 
+// Cross-platform alert dialog (native Alert on mobile, window.alert on web).
 function notify(title: string, message: string, onDismiss?: () => void) {
   if (Platform.OS === "web") {
     window.alert(`${title}\n\n${message}`);
@@ -19,6 +20,7 @@ function notify(title: string, message: string, onDismiss?: () => void) {
   }
 }
 
+// Sign-in / sign-up screen backed by Supabase Auth.
 export default function LoginScreen() {
   const { tokens } = useTheme();
   const { t } = useT();
@@ -30,6 +32,7 @@ export default function LoginScreen() {
   const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Calls Supabase sign-in or sign-up depending on the active mode, then navigates or notifies.
   async function submit() {
     setLoading(true);
     if (mode === "signin") {
@@ -47,6 +50,7 @@ export default function LoginScreen() {
 
   const valid = mode === "signin" ? email.length >= 3 && password.length >= 6 : email.length >= 3 && password.length >= 6 && fullName.length >= 2;
 
+  // Renders a labeled text input field for the sign-in/sign-up form.
   const inp = (value: string, setter: (v: string) => void, label: string, ph: string, opts?: { secure?: boolean; kb?: KeyboardTypeOptions }) => (
     <View style={{ marginBottom: 12 }}>
       <Text style={{ color: tokens.color.ink, fontWeight: "900", fontSize: 12, marginBottom: 6 }}>{label}</Text>

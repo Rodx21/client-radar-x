@@ -19,6 +19,7 @@ const LINKS: { key: string; labelKey: string; icon: IoniconName; href: DrawerHre
   { key: "settings", labelKey: "drawer.settings", icon: "settings-outline", href: "/settings",                 auth: false },
 ];
 
+// Side drawer navigation with links, active-state highlighting, and session-gated items.
 export default function DrawerLayout() {
   const { tokens } = useTheme();
   const { t } = useT();
@@ -28,8 +29,10 @@ export default function DrawerLayout() {
 
   useEffect(() => { getSession().then(setSession); }, [pathname]);
 
+  // Checks whether a drawer link matches the current route segment.
   function isActive(href: DrawerHref) { return !!pathname?.includes(href.replace("/(drawer)", "").split("/")[1]); }
 
+  // Navigates to a drawer link, redirecting to login first if the link requires auth.
   function go(href: DrawerHref, auth: boolean) {
     if (auth && !session) { router.push("/login"); return; }
     router.push(href);

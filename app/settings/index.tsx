@@ -10,6 +10,7 @@ import { Screen, Container, Card, Divider } from "@/app/theme/ui";
 
 const GITHUB = "https://github.com/Rodx21/client-radar-x";
 
+// Settings screen: theme toggle, language switch, and app/about info.
 export default function SettingsScreen() {
   const { tokens, mode, setMode } = useTheme();
   const { t, lang, setLang } = useT();

@@ -2,6 +2,7 @@ import { supabase } from "./supabase";
 
 export type Session = { userId: string; name: string; email?: string };
 
+// Reads the current Supabase auth session and maps it to a simplified Session shape.
 export async function getSession(): Promise<Session | null> {
   const { data } = await supabase.auth.getSession();
   if (!data.session?.user) return null;
@@ -13,6 +14,7 @@ export async function getSession(): Promise<Session | null> {
   };
 }
 
+// Signs the current user out of Supabase Auth.
 export async function signOut(): Promise<void> {
   await supabase.auth.signOut();
 }

@@ -6,6 +6,7 @@ import { I18nProvider } from "./i18n";
 
 SplashScreen.preventAutoHideAsync();
 
+// Root navigation stack; wraps the whole app in theme and i18n providers.
 export default function RootLayout() {
   useEffect(() => {
     SplashScreen.hideAsync();

@@ -3,6 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@/app/theme/theme";
 import { useT } from "@/app/i18n";
 
+// Bottom tab navigation for the four main screens (Início, Serviços, Galeria, Agenda).
 export default function TabsLayout() {
   const { tokens } = useTheme();
   const { t } = useT();

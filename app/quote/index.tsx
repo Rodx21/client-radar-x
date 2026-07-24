@@ -32,6 +32,7 @@ const STEPS: { icon: IoniconName; titleKey: string }[] = [
   { icon: "chatbubbles-outline", titleKey: "quote.step4Title" },
 ];
 
+// 4-step quote wizard: pick service, enter vehicle info, attach photos, submit via WhatsApp + Supabase.
 export default function QuoteScreen() {
   const { tokens } = useTheme();
   const { t } = useT();
@@ -65,6 +66,7 @@ export default function QuoteScreen() {
     return () => clearTimeout(id);
   }, [step, service, model, year, photos, name, phone]);
 
+  // Returns whether the current step's required fields are filled in.
   const canNext = () => {
     if (step === 0) return !!service;
     if (step === 1) return model.trim().length >= 2 && year.trim().length >= 2;
@@ -73,6 +75,7 @@ export default function QuoteScreen() {
     return false;
   };
 
+  // Opens a browser file picker and resolves selected images as data URIs (web only).
   function pickPhotosWeb(): Promise<string[]> {
     return new Promise((resolve) => {
       const input = document.createElement("input");
@@ -96,6 +99,7 @@ export default function QuoteScreen() {
     });
   }
 
+  // Requests gallery permission and lets the user pick photos (native) or delegates to the web picker.
   async function pickPhotos() {
     if (Platform.OS === "web") {
       const uris = await pickPhotosWeb();
@@ -108,6 +112,7 @@ export default function QuoteScreen() {
     if (!result.canceled) setPhotos((prev) => Array.from(new Set([...prev, ...result.assets.map((a) => a.uri)])).slice(0, 12));
   }
 
+  // Saves the quote to Supabase, clears the local draft, and opens WhatsApp with a prefilled message.
   async function submit() {
     if (Platform.OS !== "web") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     const svc = SERVICES.find((s) => s.id === service)?.labelKey ?? service;
@@ -134,6 +139,7 @@ export default function QuoteScreen() {
     Linking.openURL(`https://wa.me/${CLIENT.whatsappPhone}?text=${encodeURIComponent(msg)}`).catch(() => {});
   }
 
+  // Renders a labeled text input field shared by the vehicle-info and contact steps.
   const field = (label: string, value: string, setter: (v: string) => void, ph: string, opts?: Partial<TextInputProps>) => (
     <View style={{ marginBottom: 12 }}>
       <Text style={{ color: tokens.color.ink, fontWeight: "900", fontSize: 12, marginBottom: 6 }}>{label}</Text>

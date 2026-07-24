@@ -8,6 +8,7 @@ const base = {
   font: { title: 22, h1: 28, h2: 18, body: 14, small: 12 },
 } as const;
 
+// Builds the color/spacing/radius token set for the given light/dark mode.
 export function createTokens(mode: ThemeMode) {
   const accent = CLIENT.colors.accent;
   const accentSoft = mode === "dark" ? CLIENT.colors.accentSoftDark : CLIENT.colors.accentSoftLight;

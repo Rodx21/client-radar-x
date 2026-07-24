@@ -17,6 +17,7 @@ const TRUST_ITEMS: { icon: IoniconName; key: string }[] = [
   { icon: "logo-whatsapp", key: "home.trustWhatsApp" },
 ];
 
+// Home screen: hero CTA, service category highlights, trust badges, and location info.
 export default function Inicio() {
   const { tokens } = useTheme();
   const { t } = useT();
@@ -33,6 +34,7 @@ export default function Inicio() {
     { id: "wheels", titleKey: "servicesData.wheelsTitle", blurbKey: "servicesData.wheelsBlurb", priceKey: "servicesData.wheelsPrice" },
   ].filter((s) => s.id === active).slice(0, 3);
 
+  // Opens WhatsApp with a pre-filled quote request message.
   const wa = () => Linking.openURL(`https://wa.me/${CLIENT.whatsappPhone}?text=${encodeURIComponent(t("home.waQuickMessage"))}`).catch(() => {});
 
   return (
