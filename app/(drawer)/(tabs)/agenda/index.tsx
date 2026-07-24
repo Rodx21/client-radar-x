@@ -7,7 +7,7 @@ import { useT, WEEKDAY_ABBR, MONTH_ABBR } from "@/app/i18n";
 import { getSession, Session } from "@/app/lib/session";
 import { supabase, TENANT_ID } from "@/app/lib/supabase";
 import { Screen, Container, Card, SoftCard, PrimaryButton, Divider, FadeSlideIn, StatusBadge } from "@/app/theme/ui";
-import { weekDays, toDate } from "./dateHelpers";
+import { weekDays, toDate } from "@/app/lib/agendaDates";
 
 type Appt = { id: string; car_model: string; car_year: string; date: string; time: string; status: "pending" | "confirmed" | "cancelled" | "completed"; services: { name: string }[] | null };
 

@@ -1,4 +1,4 @@
-import { weekDays, toDate } from "../../app/(drawer)/(tabs)/agenda/dateHelpers";
+import { weekDays, toDate } from "../../app/lib/agendaDates";
 
 describe("weekDays", () => {
   it("returns 7 consecutive dates starting from the base date", () => {
