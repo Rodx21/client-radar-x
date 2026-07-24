@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { View, Text, Pressable, ScrollView, RefreshControl } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useRouter, useFocusEffect } from "expo-router";
 import { useTheme } from "@/app/theme/theme";
 import { useT, WEEKDAY_ABBR, MONTH_ABBR } from "@/app/i18n";
 import { getSession, Session } from "@/app/lib/session";
 import { supabase, TENANT_ID } from "@/app/lib/supabase";
 import { Screen, Container, Card, SoftCard, PrimaryButton, Divider, FadeSlideIn, StatusBadge } from "@/app/theme/ui";
 import { weekDays, toDate } from "@/app/lib/agendaDates";
+import { appointmentStatusMeta } from "@/app/lib/appointmentStatus";
 
 type Appt = { id: string; car_model: string; car_year: string; date: string; time: string; status: "pending" | "confirmed" | "cancelled" | "completed"; services: { name: string }[] | null };
 
@@ -18,12 +19,6 @@ export default function AgendaScreen() {
   const router = useRouter();
   const DAYS = WEEKDAY_ABBR[lang];
   const MONTHS = MONTH_ABBR[lang];
-  const STATUS = {
-    confirmed: { label: t("tabs.statusConfirmed"), color: "green" as const },
-    pending: { label: t("tabs.statusPending"), color: "amber" as const },
-    cancelled: { label: t("tabs.statusCancelled"), color: "red" as const },
-    completed: { label: t("tabs.statusCompleted"), color: "muted" as const },
-  };
   const [session, setSession] = useState<Session | null>(null);
   const [offset, setOffset] = useState(0);
   const [appts, setAppts] = useState<Appt[]>([]);
@@ -44,7 +39,10 @@ export default function AgendaScreen() {
     setLoading(false);
   }, []);
 
-  useEffect(() => { if (session) fetch(); }, [session]);
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- refetches when the session resolves, not a render-time update
+  useEffect(() => { if (session) fetch(); }, [session, fetch]);
+  // Refetches whenever this tab regains focus, so a newly created booking shows up on return.
+  useFocusEffect(useCallback(() => { if (session) fetch(); }, [session, fetch]));
 
   const selected = toDate(days[offset]);
   const filtered = appts.filter((a) => a.date === selected);
@@ -104,14 +102,14 @@ export default function AgendaScreen() {
                     <Text style={{ color: tokens.color.ink, fontWeight: "900", fontSize: 14 }}>{t("tabs.agendaSection")}</Text>
                     <Text style={{ color: tokens.color.muted, fontSize: 12, marginTop: 2 }}>{loading ? t("common.loading") : filtered.length ? `${filtered.length} ${t("tabs.appointmentsCount")}` : t("tabs.agendaEmptyTitle")}</Text>
                   </View>
-                  <Pressable onPress={() => router.push("/quote")} style={{ width: 44, height: 44, borderRadius: 14, borderWidth: 1, borderColor: tokens.color.hairline, alignItems: "center", justifyContent: "center" }}>
+                  <Pressable onPress={() => router.push("/booking")} style={{ width: 44, height: 44, borderRadius: 14, borderWidth: 1, borderColor: tokens.color.hairline, alignItems: "center", justifyContent: "center" }}>
                     <Ionicons name="add" size={20} color={tokens.color.accent} />
                   </Pressable>
                 </View>
               </SoftCard>
               <View style={{ marginTop: tokens.space.md, gap: 10 }}>
                 {filtered.map((a, idx) => {
-                  const s = STATUS[a.status] ?? STATUS.pending;
+                  const s = appointmentStatusMeta(a.status, t);
                   return (
                     <FadeSlideIn key={a.id} delay={idx * 60}>
                       <Card>

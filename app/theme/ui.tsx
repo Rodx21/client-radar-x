@@ -1,5 +1,7 @@
-import React, { useEffect, useRef } from "react";
-import { View, Text, Pressable, ViewStyle, TextStyle, Animated, Platform } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, Pressable, TextInput, Switch, ViewStyle, TextStyle, Animated, Platform, type KeyboardTypeOptions } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "./theme";
 
 // Full-height screen wrapper that applies the background color and a max-width on web.
@@ -22,6 +24,21 @@ export function Screen({ children, style }: { children: React.ReactNode; style?:
 export function Container({ children, style }: { children: React.ReactNode; style?: ViewStyle }) {
   const { tokens } = useTheme();
   return <View style={[{ paddingHorizontal: tokens.space.xl }, style]}>{children}</View>;
+}
+
+// Standard header for every admin sub-screen: back chevron, centered title, and an optional right-side slot (defaults to a spacer so the title stays centered).
+export function AdminHeader({ title, onBack, right }: { title: string; onBack: () => void; right?: React.ReactNode }) {
+  const { tokens } = useTheme();
+  const insets = useSafeAreaInsets();
+  return (
+    <View style={{ paddingTop: Math.max(insets.top, 20) + 8, paddingHorizontal: tokens.space.xl, paddingBottom: tokens.space.md, borderBottomWidth: 1, borderBottomColor: tokens.color.hairline, backgroundColor: tokens.color.surface, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+      <Pressable onPress={onBack} accessibilityRole="button" style={{ width: 44, height: 44, alignItems: "center", justifyContent: "center" }}>
+        <Ionicons name="chevron-back" size={22} color={tokens.color.ink} />
+      </Pressable>
+      <Text style={{ color: tokens.color.ink, fontWeight: "900", fontSize: 16 }}>{title}</Text>
+      {right ?? <View style={{ width: 44 }} />}
+    </View>
+  );
 }
 
 // Bordered surface card, the default container for list items and content blocks.
@@ -107,12 +124,41 @@ export function StatusBadge({ label, color }: { label: string; color: "green" | 
   );
 }
 
+type FormFieldProps = {
+  value: string; onChangeText: (v: string) => void; label: string; placeholder?: string;
+  secure?: boolean; keyboardType?: KeyboardTypeOptions; multiline?: boolean; style?: ViewStyle;
+};
+
+// Labeled text input used across admin create/edit forms (services, gallery, tenant settings).
+export function FormField({ value, onChangeText, label, placeholder, secure, keyboardType, multiline, style }: FormFieldProps) {
+  const { tokens } = useTheme();
+  return (
+    <View style={[{ marginBottom: 12 }, style]}>
+      <Text style={{ color: tokens.color.ink, fontWeight: "900", fontSize: 12, marginBottom: 6 }}>{label}</Text>
+      <TextInput value={value} onChangeText={onChangeText} placeholder={placeholder} placeholderTextColor={tokens.color.muted}
+        secureTextEntry={secure} keyboardType={keyboardType} autoCapitalize="none" multiline={multiline}
+        style={{ borderWidth: 1, borderColor: tokens.color.hairline, backgroundColor: tokens.color.surface, borderRadius: 14, paddingHorizontal: 14, paddingVertical: 12, color: tokens.color.ink, fontWeight: "700", minHeight: multiline ? 80 : undefined, textAlignVertical: multiline ? "top" : "center" }} />
+    </View>
+  );
+}
+
+// Labeled switch row used for boolean fields in admin forms (e.g. service "active").
+export function ToggleRow({ label, value, onValueChange }: { label: string; value: boolean; onValueChange: (v: boolean) => void }) {
+  const { tokens } = useTheme();
+  return (
+    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: 8 }}>
+      <Text style={{ color: tokens.color.ink, fontWeight: "800", fontSize: 13 }}>{label}</Text>
+      <Switch value={value} onValueChange={onValueChange} trackColor={{ true: tokens.color.accent }} />
+    </View>
+  );
+}
+
 // Wraps children in a fade + upward-slide entrance animation.
 export function FadeSlideIn({ children, delay = 0, style, distance = 18 }: { children: React.ReactNode; delay?: number; style?: ViewStyle; distance?: number }) {
-  const anim = useRef(new Animated.Value(0)).current;
+  const [anim] = useState(() => new Animated.Value(0));
   useEffect(() => {
     Animated.timing(anim, { toValue: 1, duration: 380, delay, useNativeDriver: true }).start();
-  }, []);
+  }, [anim, delay]);
   return (
     <Animated.View style={[{ opacity: anim, transform: [{ translateY: anim.interpolate({ inputRange: [0, 1], outputRange: [distance, 0] }) }] }, style]}>
       {children}

@@ -1,24 +1,15 @@
 import { useState } from "react";
-import { View, Text, TextInput, Pressable, Alert, Platform, ScrollView, type KeyboardTypeOptions } from "react-native";
+import { View, Text, TextInput, Pressable, ScrollView, type KeyboardTypeOptions } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "./theme/theme";
 import { useT } from "./i18n";
 import { supabase } from "./lib/supabase";
+import { notify } from "./lib/notify";
 import { Screen, Card, PrimaryButton, GhostButton } from "./theme/ui";
 
 type Mode = "signin" | "signup";
-
-// Cross-platform alert dialog (native Alert on mobile, window.alert on web).
-function notify(title: string, message: string, onDismiss?: () => void) {
-  if (Platform.OS === "web") {
-    window.alert(`${title}\n\n${message}`);
-    onDismiss?.();
-  } else {
-    Alert.alert(title, message, onDismiss ? [{ text: "OK", onPress: onDismiss }] : undefined);
-  }
-}
 
 // Sign-in / sign-up screen backed by Supabase Auth.
 export default function LoginScreen() {

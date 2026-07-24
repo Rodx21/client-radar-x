@@ -1,10 +1,7 @@
 import { ScrollViewStyleReset } from "expo-router/html";
 import type { PropsWithChildren } from "react";
 
-// This file is web-only. It configures the root HTML document for every
-// web page during static rendering. It runs in Node.js and has no access
-// to the DOM or browser APIs.
-// Root HTML document used only for static web rendering.
+// Root HTML document for static web rendering only; runs in Node.js, no DOM/browser APIs available.
 export default function Root({ children }: PropsWithChildren) {
   return (
     <html lang="pt-BR">

@@ -1,6 +1,7 @@
 import type { ImageSourcePropType } from "react-native";
 
 export type ServiceCategory = { id: string; label: string };
+export type DayHours = { open: string; close: string } | null;
 
 export type ClientConfig = {
   businessName: string;
@@ -18,6 +19,8 @@ export type ClientConfig = {
   supabaseUrl: string;
   supabaseAnonKey: string;
   serviceCategories: ServiceCategory[];
+  // Opening hours per weekday (0=Sunday..6=Saturday, matches Date#getDay()). null = closed.
+  businessHours: Record<number, DayHours>;
 };
 
 export const CLIENT: ClientConfig = {
@@ -47,4 +50,13 @@ export const CLIENT: ClientConfig = {
     { id: "lighting", label: "Iluminação"    },
     { id: "wheels",   label: "Rodas"         },
   ],
+  businessHours: {
+    0: null,                              // Sunday — closed
+    1: { open: "09:00", close: "17:00" }, // Monday
+    2: { open: "09:00", close: "17:00" }, // Tuesday
+    3: { open: "09:00", close: "17:00" }, // Wednesday
+    4: { open: "09:00", close: "17:00" }, // Thursday
+    5: { open: "09:00", close: "17:00" }, // Friday
+    6: { open: "08:00", close: "16:00" }, // Saturday
+  },
 };
