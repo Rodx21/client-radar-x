@@ -4,14 +4,7 @@ import { useRouter } from "expo-router";
 import { useTheme } from "@/app/theme/theme";
 import { useT } from "@/app/i18n";
 import { Screen, Container, Card, FadeSlideIn, AdminHeader } from "@/app/theme/ui";
-
-const MODULES = [
-  { key: "appointments", icon: "calendar-outline" as const, href: "/admin/appointments" as const },
-  { key: "quotes",       icon: "receipt-outline" as const,  href: "/admin/quotes" as const },
-  { key: "services",     icon: "construct-outline" as const, href: "/admin/services" as const },
-  { key: "gallery",      icon: "images-outline" as const,   href: "/admin/gallery" as const },
-  { key: "settings",     icon: "business-outline" as const, href: "/admin/settings" as const },
-];
+import { ADMIN_MODULES } from "@/app/lib/adminModules";
 
 // Admin hub; lists the manageable sections (appointments, quotes, services, gallery, tenant settings).
 export default function AdminHubScreen() {
@@ -29,7 +22,7 @@ export default function AdminHubScreen() {
           </FadeSlideIn>
 
           <View style={{ marginTop: tokens.space.lg, gap: 10 }}>
-            {MODULES.map((m, idx) => (
+            {ADMIN_MODULES.map((m, idx) => (
               <FadeSlideIn key={m.key} delay={idx * 60}>
                 <Pressable onPress={() => router.push(m.href)} style={({ pressed }) => ({ opacity: pressed ? 0.9 : 1 })}>
                   <Card>

@@ -2,8 +2,11 @@ import React, { createContext, useContext, useEffect, useMemo, useState } from "
 import { createTokens, ThemeMode, Tokens } from "./tokens";
 import { getPref, setPref } from "@/app/lib/storage";
 
-type Ctx = { mode: ThemeMode; setMode: (m: ThemeMode) => void; toggle: () => void; tokens: Tokens };
-const ThemeContext = createContext<Ctx | null>(null);
+export type ThemeCtx = { mode: ThemeMode; setMode: (m: ThemeMode) => void; toggle: () => void; tokens: Tokens };
+// Exported so admin routes can override it with a fixed palette (see adminTokens.ts) —
+// the design system's own rule is "público escuro, operação clara": admin isn't meant
+// to follow the customer app's user-toggleable light/dark preference at all.
+export const ThemeContext = createContext<ThemeCtx | null>(null);
 const PREF = "crx.theme";
 
 // Provides the current theme mode and tokens to the app, persisting the choice locally.
