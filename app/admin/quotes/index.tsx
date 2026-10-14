@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { View, Text, Pressable, ScrollView, ActivityIndicator, RefreshControl } from "react-native";
 import { useRouter } from "expo-router";
+import { goBackOr } from "@/app/lib/nav";
 import { useTheme } from "@/app/theme/theme";
 import { useT } from "@/app/i18n";
 import { supabase, TENANT_ID } from "@/app/lib/supabase";
@@ -35,7 +36,7 @@ export default function AdminQuotesScreen() {
 
   return (
     <Screen>
-      <AdminHeader title={t("admin.quotes.title")} onBack={() => router.back()} />
+      <AdminHeader title={t("admin.quotes.title")} onBack={() => (goBackOr(router, "/admin"))} />
       <ScrollView contentContainerStyle={{ paddingBottom: 32 }} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={async () => { setRefreshing(true); await load(); setRefreshing(false); }} tintColor={tokens.color.accent} />}>
         <Container style={{ paddingTop: tokens.space.lg }}>
           <FadeSlideIn delay={0}>

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { View, Text, Pressable, ScrollView, ActivityIndicator, RefreshControl } from "react-native";
 import { useRouter } from "expo-router";
+import { goBackOr } from "@/app/lib/nav";
 import { useTheme } from "@/app/theme/theme";
 import { useT } from "@/app/i18n";
 import { supabase, TENANT_ID } from "@/app/lib/supabase";
@@ -29,12 +30,13 @@ export default function AdminAppointmentsScreen() {
   const [refreshing, setRefreshing] = useState(false);
 
   const load = useCallback(async () => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("appointments")
       .select("id,car_model,car_year,date,time,status,services(name),profiles(full_name)")
       .eq("tenant_id", TENANT_ID)
       .order("date", { ascending: false })
       .order("time", { ascending: false });
+    if (error) console.error("admin appointments load failed:", error.message, error);
     if (data) setRows(data as unknown as Row[]);
   }, []);
 
@@ -45,7 +47,7 @@ export default function AdminAppointmentsScreen() {
 
   return (
     <Screen>
-      <AdminHeader title={t("admin.appointments.title")} onBack={() => router.back()} />
+      <AdminHeader title={t("admin.appointments.title")} onBack={() => (goBackOr(router, "/admin"))} />
       <ScrollView contentContainerStyle={{ paddingBottom: 32 }} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={async () => { setRefreshing(true); await load(); setRefreshing(false); }} tintColor={tokens.color.accent} />}>
         <Container style={{ paddingTop: tokens.space.lg }}>
           <FadeSlideIn delay={0}>

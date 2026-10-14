@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { View, Text, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
+import { goBackOr } from "@/app/lib/nav";
 import { useTheme } from "@/app/theme/theme";
 import { useT } from "@/app/i18n";
 import { CLIENT } from "@/config/client";
@@ -47,12 +48,12 @@ export default function NewGalleryItemScreen() {
     });
     setSaving(false);
     if (error) { notify(t("login.errorTitle"), error.message); return; }
-    router.back();
+    goBackOr(router, "/admin/gallery");
   }
 
   return (
     <Screen>
-      <AdminHeader title={t("admin.gallery.new")} onBack={() => router.back()} />
+      <AdminHeader title={t("admin.gallery.new")} onBack={() => (goBackOr(router, "/admin/gallery"))} />
 
       <ScrollView contentContainerStyle={{ padding: tokens.space.xl }}>
         <FormField label={t("admin.gallery.itemTitle")} value={title} onChangeText={setTitle} placeholder={t("admin.gallery.itemTitlePh")} />

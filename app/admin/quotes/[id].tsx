@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { View, Text, Image, ScrollView, ActivityIndicator, Linking } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { goBackOr } from "@/app/lib/nav";
 import { useTheme } from "@/app/theme/theme";
 import { useT } from "@/app/i18n";
 import { supabase } from "@/app/lib/supabase";
@@ -61,7 +62,7 @@ export default function AdminQuoteDetailScreen() {
   if (loading || !quote) {
     return (
       <Screen>
-        <AdminHeader title={t("admin.quotes.detailTitle")} onBack={() => router.back()} />
+        <AdminHeader title={t("admin.quotes.detailTitle")} onBack={() => (goBackOr(router, "/admin/quotes"))} />
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
           <ActivityIndicator color={tokens.color.accent} />
         </View>
@@ -73,7 +74,7 @@ export default function AdminQuoteDetailScreen() {
 
   return (
     <Screen>
-      <AdminHeader title={t("admin.quotes.detailTitle")} onBack={() => router.back()} />
+      <AdminHeader title={t("admin.quotes.detailTitle")} onBack={() => (goBackOr(router, "/admin/quotes"))} />
       <ScrollView contentContainerStyle={{ paddingBottom: 32 }}>
         <Container style={{ paddingTop: tokens.space.lg }}>
           <FadeSlideIn delay={0}>

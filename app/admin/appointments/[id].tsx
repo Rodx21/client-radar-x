@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { View, Text, ScrollView, ActivityIndicator } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { goBackOr } from "@/app/lib/nav";
 import { useTheme } from "@/app/theme/theme";
 import { useT } from "@/app/i18n";
 import { supabase } from "@/app/lib/supabase";
@@ -52,7 +53,7 @@ export default function AdminAppointmentDetailScreen() {
   if (loading || !appt) {
     return (
       <Screen>
-        <AdminHeader title={t("admin.appointments.detailTitle")} onBack={() => router.back()} />
+        <AdminHeader title={t("admin.appointments.detailTitle")} onBack={() => (goBackOr(router, "/admin/appointments"))} />
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
           <ActivityIndicator color={tokens.color.accent} />
         </View>
@@ -64,7 +65,7 @@ export default function AdminAppointmentDetailScreen() {
 
   return (
     <Screen>
-      <AdminHeader title={t("admin.appointments.detailTitle")} onBack={() => router.back()} />
+      <AdminHeader title={t("admin.appointments.detailTitle")} onBack={() => (goBackOr(router, "/admin/appointments"))} />
       <ScrollView contentContainerStyle={{ paddingBottom: 32 }}>
         <Container style={{ paddingTop: tokens.space.lg }}>
           <FadeSlideIn delay={0}>

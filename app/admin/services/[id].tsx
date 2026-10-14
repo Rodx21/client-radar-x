@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { View, Text, ScrollView, Alert, Platform, ActivityIndicator } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { goBackOr } from "@/app/lib/nav";
 import { useTheme } from "@/app/theme/theme";
 import { useT } from "@/app/i18n";
 import { CLIENT } from "@/config/client";
@@ -52,7 +53,7 @@ export default function EditServiceScreen() {
     }).eq("id", id);
     setSaving(false);
     if (error) { notify(t("login.errorTitle"), error.message); return; }
-    router.back();
+    goBackOr(router, "/admin/services");
   }
 
   function confirmDelete() {
@@ -61,7 +62,7 @@ export default function EditServiceScreen() {
       const { error } = await supabase.from("services").delete().eq("id", id);
       setSaving(false);
       if (error) { notify(t("login.errorTitle"), error.message); return; }
-      router.back();
+      goBackOr(router, "/admin/services");
     };
     if (Platform.OS === "web") {
       if (window.confirm(t("admin.services.deleteConfirm"))) onConfirm();
@@ -76,7 +77,7 @@ export default function EditServiceScreen() {
   if (loading) {
     return (
       <Screen>
-        <AdminHeader title={t("admin.services.edit")} onBack={() => router.back()} />
+        <AdminHeader title={t("admin.services.edit")} onBack={() => (goBackOr(router, "/admin/services"))} />
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
           <ActivityIndicator color={tokens.color.accent} />
         </View>
@@ -86,7 +87,7 @@ export default function EditServiceScreen() {
 
   return (
     <Screen>
-      <AdminHeader title={t("admin.services.edit")} onBack={() => router.back()} />
+      <AdminHeader title={t("admin.services.edit")} onBack={() => (goBackOr(router, "/admin/services"))} />
 
       <ScrollView contentContainerStyle={{ padding: tokens.space.xl }}>
         <FormField label={t("admin.services.name")} value={name} onChangeText={setName} placeholder={t("admin.services.namePh")} />

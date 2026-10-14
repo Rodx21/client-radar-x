@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { View, Text, ScrollView, ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";
+import { goBackOr } from "@/app/lib/nav";
 import { useTheme } from "@/app/theme/theme";
 import { useT } from "@/app/i18n";
 import { supabase, TENANT_ID } from "@/app/lib/supabase";
@@ -51,7 +52,7 @@ export default function AdminTenantSettingsScreen() {
   if (loading) {
     return (
       <Screen>
-        <AdminHeader title={t("admin.settings.title")} onBack={() => router.back()} />
+        <AdminHeader title={t("admin.settings.title")} onBack={() => (goBackOr(router, "/admin"))} />
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
           <ActivityIndicator color={tokens.color.accent} />
         </View>
@@ -61,7 +62,7 @@ export default function AdminTenantSettingsScreen() {
 
   return (
     <Screen>
-      <AdminHeader title={t("admin.settings.title")} onBack={() => router.back()} />
+      <AdminHeader title={t("admin.settings.title")} onBack={() => (goBackOr(router, "/admin"))} />
       <ScrollView contentContainerStyle={{ paddingBottom: 32 }}>
         <Container style={{ paddingTop: tokens.space.lg }}>
           <FadeSlideIn delay={0}>

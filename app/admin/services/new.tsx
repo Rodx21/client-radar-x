@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { View, Text, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
+import { goBackOr } from "@/app/lib/nav";
 import { useTheme } from "@/app/theme/theme";
 import { useT } from "@/app/i18n";
 import { CLIENT } from "@/config/client";
@@ -36,12 +37,12 @@ export default function NewServiceScreen() {
     });
     setSaving(false);
     if (error) { notify(t("login.errorTitle"), error.message); return; }
-    router.back();
+    goBackOr(router, "/admin/services");
   }
 
   return (
     <Screen>
-      <AdminHeader title={t("admin.services.new")} onBack={() => router.back()} />
+      <AdminHeader title={t("admin.services.new")} onBack={() => (goBackOr(router, "/admin/services"))} />
 
       <ScrollView contentContainerStyle={{ padding: tokens.space.xl }}>
         <FormField label={t("admin.services.name")} value={name} onChangeText={setName} placeholder={t("admin.services.namePh")} />

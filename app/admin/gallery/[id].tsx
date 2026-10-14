@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { View, Text, ScrollView, Alert, Platform, ActivityIndicator } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { goBackOr } from "@/app/lib/nav";
 import { useTheme } from "@/app/theme/theme";
 import { useT } from "@/app/i18n";
 import { CLIENT } from "@/config/client";
@@ -62,7 +63,7 @@ export default function EditGalleryItemScreen() {
     }).eq("id", id);
     setSaving(false);
     if (error) { notify(t("login.errorTitle"), error.message); return; }
-    router.back();
+    goBackOr(router, "/admin/gallery");
   }
 
   function confirmDelete() {
@@ -71,7 +72,7 @@ export default function EditGalleryItemScreen() {
       const { error } = await supabase.from("gallery_items").delete().eq("id", id);
       setSaving(false);
       if (error) { notify(t("login.errorTitle"), error.message); return; }
-      router.back();
+      goBackOr(router, "/admin/gallery");
     };
     if (Platform.OS === "web") {
       if (window.confirm(t("admin.gallery.deleteConfirm"))) onConfirm();
@@ -86,7 +87,7 @@ export default function EditGalleryItemScreen() {
   if (loading) {
     return (
       <Screen>
-        <AdminHeader title={t("admin.gallery.edit")} onBack={() => router.back()} />
+        <AdminHeader title={t("admin.gallery.edit")} onBack={() => (goBackOr(router, "/admin/gallery"))} />
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
           <ActivityIndicator color={tokens.color.accent} />
         </View>
@@ -96,7 +97,7 @@ export default function EditGalleryItemScreen() {
 
   return (
     <Screen>
-      <AdminHeader title={t("admin.gallery.edit")} onBack={() => router.back()} />
+      <AdminHeader title={t("admin.gallery.edit")} onBack={() => (goBackOr(router, "/admin/gallery"))} />
 
       <ScrollView contentContainerStyle={{ padding: tokens.space.xl }}>
         <FormField label={t("admin.gallery.itemTitle")} value={title} onChangeText={setTitle} placeholder={t("admin.gallery.itemTitlePh")} />
