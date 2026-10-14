@@ -12,6 +12,7 @@ export type ClientConfig = {
   logo: ImageSourcePropType;
   colors: { accent: string; accentSoftLight: string; accentSoftDark: string };
   whatsappPhone: string;
+  landlinePhone: string;
   instagramHandle: string;
   instagramUrl: string;
   mapsUrl: string;
@@ -31,11 +32,12 @@ export const CLIENT: ClientConfig = {
   appVersion: "1.0.0",
   logo: require("../assets/brands/auto-music-sound/wordmark-transparent.png"),
   colors: {
-    accent: "#FF0000",
-    accentSoftLight: "rgba(255, 0, 0, 0.12)",
-    accentSoftDark: "rgba(255, 0, 0, 0.16)",
+    accent: "#D9121F",
+    accentSoftLight: "rgba(217, 18, 31, 0.12)",
+    accentSoftDark: "rgba(217, 18, 31, 0.16)",
   },
   whatsappPhone: "5511943814636",
+  landlinePhone: "1122965416",
   instagramHandle: "automusicsound",
   instagramUrl: "https://www.instagram.com/automusicsound/",
   mapsUrl: "https://maps.google.com/?q=R.+Serra+de+Botucatu,+2100,+Tatu%C3%A1p%C3%A9,+S%C3%A3o+Paulo+SP",

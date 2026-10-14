@@ -4,12 +4,12 @@ describe("createTokens", () => {
   it("returns light-mode colors when mode is 'light'", () => {
     const tokens = createTokens("light");
     expect(tokens.color.surface).toBe("#FFFFFF");
-    expect(tokens.color.ink).toBe("#0B0B0D");
+    expect(tokens.color.ink).toBe("#111111");
   });
 
   it("returns dark-mode colors when mode is 'dark'", () => {
     const tokens = createTokens("dark");
-    expect(tokens.color.surface).toBe("#0B0B0D");
+    expect(tokens.color.surface).toBe("#0A0A0A");
     expect(tokens.color.ink).toBe("#FFFFFF");
   });
 
@@ -17,7 +17,7 @@ describe("createTokens", () => {
     const light = createTokens("light");
     const dark = createTokens("dark");
     expect(light.color.accent).toBe(dark.color.accent);
-    expect(light.color.accent).toBe("#FF0000");
+    expect(light.color.accent).toBe("#D9121F");
   });
 
   it("keeps spacing and radius tokens identical across modes", () => {
