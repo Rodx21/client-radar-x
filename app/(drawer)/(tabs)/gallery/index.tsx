@@ -6,7 +6,7 @@ import { useTheme } from "@/app/theme/theme";
 import { useT } from "@/app/i18n";
 import { getSession, Session } from "@/app/lib/session";
 import { supabase, TENANT_ID } from "@/app/lib/supabase";
-import { Screen, Container, Card, FadeSlideIn, PrimaryButton } from "@/app/theme/ui";
+import { Screen, Container, Card, FadeSlideIn, PrimaryButton, DesktopBackBar } from "@/app/theme/ui";
 
 type GalleryItem = { id: string; title: string | null; category: string | null; before_url: string | null; after_url: string };
 
@@ -60,6 +60,7 @@ export default function GalleryScreen() {
 
   return (
     <Screen>
+      <DesktopBackBar />
       <ScrollView contentContainerStyle={{ paddingBottom: 32 }}>
         <Container style={{ paddingTop: tokens.space.lg }}>
           <FadeSlideIn delay={0}>

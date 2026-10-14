@@ -11,7 +11,7 @@ import { useT } from "@/app/i18n";
 import { CLIENT } from "@/config/client";
 import { supabase, TENANT_ID } from "@/app/lib/supabase";
 import { uploadImage } from "@/app/lib/uploadImage";
-import { Screen, Container, Card, SoftCard, PrimaryButton, GhostButton, Divider } from "@/app/theme/ui";
+import { Screen, Container, Card, SoftCard, PrimaryButton, GhostButton, Divider, DesktopBackBar } from "@/app/theme/ui";
 
 type IoniconName = ComponentProps<typeof Ionicons>["name"];
 
@@ -156,6 +156,7 @@ export default function QuoteScreen() {
 
   return (
     <Screen>
+      <DesktopBackBar />
       <View style={{ paddingTop: Math.max(insets.top, 20) + 8, paddingHorizontal: tokens.space.xl, paddingBottom: tokens.space.md, borderBottomWidth: 1, borderBottomColor: tokens.color.hairline, backgroundColor: tokens.color.surface, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
         <Pressable onPress={() => { if (step === 0) router.back(); else { if (Platform.OS !== "web") Haptics.selectionAsync(); setStep((s) => s - 1); } }} style={{ width: 44, height: 44, alignItems: "center", justifyContent: "center" }}>
           <Ionicons name="chevron-back" size={22} color={tokens.color.ink} />

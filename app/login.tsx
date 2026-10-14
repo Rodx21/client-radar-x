@@ -7,7 +7,7 @@ import { useTheme } from "./theme/theme";
 import { useT } from "./i18n";
 import { supabase } from "./lib/supabase";
 import { notify } from "./lib/notify";
-import { Screen, Card, PrimaryButton, GhostButton } from "./theme/ui";
+import { Screen, Card, PrimaryButton, GhostButton, DesktopBackBar } from "./theme/ui";
 
 type Mode = "signin" | "signup";
 
@@ -52,6 +52,7 @@ export default function LoginScreen() {
 
   return (
     <Screen>
+      <DesktopBackBar />
       <View style={{ paddingTop: Math.max(insets.top, 20) + 8, paddingHorizontal: tokens.space.xl, paddingBottom: tokens.space.md, borderBottomWidth: 1, borderBottomColor: tokens.color.hairline, backgroundColor: tokens.color.surface, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
         <Pressable onPress={() => router.back()} style={{ width: 44, height: 44, alignItems: "center", justifyContent: "center" }}>
           <Ionicons name="chevron-back" size={22} color={tokens.color.ink} />

@@ -5,7 +5,9 @@ import { useRouter, useNavigation } from "expo-router";
 import { useTheme } from "@/app/theme/theme";
 import { useT } from "@/app/i18n";
 import { CLIENT } from "@/config/client";
+import { useResponsive } from "@/app/lib/responsive";
 import { Screen, Container, Card, SoftCard, PrimaryButton, GhostButton, Pill, Divider, FadeSlideIn } from "@/app/theme/ui";
+import { DesktopSite } from "./DesktopSite";
 
 type IoniconName = ComponentProps<typeof Ionicons>["name"];
 
@@ -16,25 +18,33 @@ const TRUST_ITEMS: { icon: IoniconName; key: string }[] = [
   { icon: "logo-whatsapp", key: "home.trustWhatsApp" },
 ];
 
+const ALL_SERVICES = [
+  { id: "tint", titleKey: "servicesData.tintTitle", blurbKey: "servicesData.tintBlurb", priceKey: "servicesData.tintPrice" },
+  { id: "audio", titleKey: "servicesData.audioTitle", blurbKey: "servicesData.audioBlurb", priceKey: "servicesData.audioPrice" },
+  { id: "wrap", titleKey: "servicesData.wrapTitle", blurbKey: "servicesData.wrapBlurb", priceKey: "servicesData.wrapPrice" },
+  { id: "chrome", titleKey: "servicesData.chromeTitle", blurbKey: "servicesData.chromeBlurb", priceKey: "servicesData.chromePrice" },
+  { id: "lighting", titleKey: "servicesData.lightingTitle", blurbKey: "servicesData.lightingBlurb", priceKey: "servicesData.lightingPrice" },
+  { id: "wheels", titleKey: "servicesData.wheelsTitle", blurbKey: "servicesData.wheelsBlurb", priceKey: "servicesData.wheelsPrice" },
+];
+
 // Home screen: hero CTA, service category highlights, trust badges, and location info.
+// Below the desktop breakpoint (and on native) renders the phone-shaped layout;
+// at/above it renders <DesktopSite/>, the full "site público" redesign (see
+// DesktopSite.tsx) from the Business OS visual handoff (2026-08-20).
 export default function Inicio() {
   const { tokens } = useTheme();
   const { t } = useT();
   const router = useRouter();
   const navigation = useNavigation();
+  const { isDesktop } = useResponsive();
   const [active, setActive] = useState(CLIENT.serviceCategories[0].id);
 
-  const services = [
-    { id: "tint", titleKey: "servicesData.tintTitle", blurbKey: "servicesData.tintBlurb", priceKey: "servicesData.tintPrice" },
-    { id: "audio", titleKey: "servicesData.audioTitle", blurbKey: "servicesData.audioBlurb", priceKey: "servicesData.audioPrice" },
-    { id: "wrap", titleKey: "servicesData.wrapTitle", blurbKey: "servicesData.wrapBlurb", priceKey: "servicesData.wrapPrice" },
-    { id: "chrome", titleKey: "servicesData.chromeTitle", blurbKey: "servicesData.chromeBlurb", priceKey: "servicesData.chromePrice" },
-    { id: "lighting", titleKey: "servicesData.lightingTitle", blurbKey: "servicesData.lightingBlurb", priceKey: "servicesData.lightingPrice" },
-    { id: "wheels", titleKey: "servicesData.wheelsTitle", blurbKey: "servicesData.wheelsBlurb", priceKey: "servicesData.wheelsPrice" },
-  ].filter((s) => s.id === active).slice(0, 3);
+  const services = ALL_SERVICES.filter((s) => s.id === active).slice(0, 3);
 
   // Opens WhatsApp with a pre-filled quote request message.
   const wa = () => Linking.openURL(`https://wa.me/${CLIENT.whatsappPhone}?text=${encodeURIComponent(t("home.waQuickMessage"))}`).catch(() => {});
+
+  if (isDesktop) return <DesktopSite />;
 
   return (
     <Screen>

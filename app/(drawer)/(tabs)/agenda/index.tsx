@@ -6,7 +6,7 @@ import { useTheme } from "@/app/theme/theme";
 import { useT, WEEKDAY_ABBR, MONTH_ABBR } from "@/app/i18n";
 import { getSession, Session } from "@/app/lib/session";
 import { supabase, TENANT_ID } from "@/app/lib/supabase";
-import { Screen, Container, Card, SoftCard, PrimaryButton, Divider, FadeSlideIn, StatusBadge } from "@/app/theme/ui";
+import { Screen, Container, Card, SoftCard, PrimaryButton, Divider, FadeSlideIn, StatusBadge, DesktopBackBar } from "@/app/theme/ui";
 import { weekDays, toDate } from "@/app/lib/agendaDates";
 import { appointmentStatusMeta } from "@/app/lib/appointmentStatus";
 
@@ -49,6 +49,7 @@ export default function AgendaScreen() {
 
   return (
     <Screen>
+      <DesktopBackBar />
       <ScrollView contentContainerStyle={{ paddingBottom: 32 }} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={async () => { setRefreshing(true); await fetch(); setRefreshing(false); }} tintColor={tokens.color.accent} />}>
         <Container style={{ paddingTop: tokens.space.lg }}>
           <FadeSlideIn delay={0}>

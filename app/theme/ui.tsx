@@ -2,11 +2,24 @@ import React, { useEffect, useState } from "react";
 import { View, Text, Pressable, TextInput, Switch, ViewStyle, TextStyle, Animated, Platform, type KeyboardTypeOptions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { useTheme } from "./theme";
+import { useResponsive } from "@/app/lib/responsive";
 
-// Full-height screen wrapper that applies the background color and a max-width on web.
+// Full-height screen wrapper. Below the desktop breakpoint (or on native) it
+// keeps the app phone-shaped, capped to a mobile column. At/above the
+// breakpoint it just fills the available width with no cap — the admin
+// sidebar's content pane, and full desktop-site screens like the home page,
+// both build their own internal full-bleed/contained sections rather than
+// having Screen force one shape on every page.
 export function Screen({ children, style }: { children: React.ReactNode; style?: ViewStyle }) {
   const { tokens } = useTheme();
+  const { isDesktop } = useResponsive();
+
+  if (isDesktop) {
+    return <View style={[{ flex: 1, backgroundColor: tokens.color.surfaceSoft }, style]}>{children}</View>;
+  }
+
   return (
     <View
       style={[
@@ -16,6 +29,34 @@ export function Screen({ children, style }: { children: React.ReactNode; style?:
       ]}
     >
       {children}
+    </View>
+  );
+}
+
+// Desktop-only "back to home" bar. Below the breakpoint it renders nothing —
+// the phone-shaped layout already has the bottom tab bar / drawer hamburger.
+// On desktop the tab bar is hidden (DesktopSite's own header covers Início),
+// so every *other* customer-facing screen needs its own way back; this is
+// that single shared way back, rather than each screen inventing one.
+export function DesktopBackBar() {
+  const { tokens } = useTheme();
+  const { isDesktop } = useResponsive();
+  const router = useRouter();
+
+  if (!isDesktop) return null;
+
+  return (
+    <View style={{ backgroundColor: tokens.color.surface, borderBottomWidth: 1, borderBottomColor: tokens.color.hairline, paddingVertical: 14 }}>
+      <View style={{ maxWidth: 1440, width: "100%", marginHorizontal: "auto", paddingHorizontal: 44 }}>
+        <Pressable
+          onPress={() => router.push("/(drawer)/(tabs)/inicio")}
+          accessibilityRole="button"
+          style={({ pressed }) => ({ flexDirection: "row", alignItems: "center", gap: 8, alignSelf: "flex-start", opacity: pressed ? 0.7 : 1 })}
+        >
+          <Ionicons name="arrow-back" size={16} color={tokens.color.accent} />
+          <Text style={{ color: tokens.color.ink, fontWeight: "800", fontSize: 13 }}>Início</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }

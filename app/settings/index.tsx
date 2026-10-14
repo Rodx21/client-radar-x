@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "@/app/theme/theme";
 import { useT } from "@/app/i18n";
 import { CLIENT } from "@/config/client";
-import { Screen, Card, Divider } from "@/app/theme/ui";
+import { Screen, Card, Divider, DesktopBackBar } from "@/app/theme/ui";
 
 const GITHUB = "https://github.com/Rodx21/client-radar-x";
 
@@ -19,6 +19,7 @@ export default function SettingsScreen() {
 
   return (
     <Screen>
+      <DesktopBackBar />
       <View style={{ paddingTop: Math.max(insets.top, 20) + 8, paddingHorizontal: tokens.space.xl, paddingBottom: tokens.space.md, borderBottomWidth: 1, borderBottomColor: tokens.color.hairline, backgroundColor: tokens.color.surface, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
         <View style={{ width: 44 }} />
         <Text style={{ color: tokens.color.ink, fontWeight: "900", fontSize: 16 }}>{t("settings.title")}</Text>

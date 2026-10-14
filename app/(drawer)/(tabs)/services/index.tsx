@@ -5,7 +5,7 @@ import { useTheme } from "@/app/theme/theme";
 import { useT } from "@/app/i18n";
 import { CLIENT } from "@/config/client";
 import { supabase, TENANT_ID } from "@/app/lib/supabase";
-import { Screen, Container, Card, SoftCard, PrimaryButton, Pill, Divider, FadeSlideIn } from "@/app/theme/ui";
+import { Screen, Container, Card, SoftCard, PrimaryButton, Pill, Divider, FadeSlideIn, DesktopBackBar } from "@/app/theme/ui";
 
 type Service = { id: string; name: string; description: string | null; price_from: number | null; category: string };
 
@@ -31,6 +31,7 @@ export default function ServicesScreen() {
 
   return (
     <Screen>
+      <DesktopBackBar />
       <ScrollView contentContainerStyle={{ paddingBottom: 32 }}>
         <Container style={{ paddingTop: tokens.space.lg }}>
           <FadeSlideIn delay={0}>
